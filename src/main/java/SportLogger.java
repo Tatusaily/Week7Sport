@@ -5,9 +5,14 @@ import java.util.Scanner;
 
 public class SportLogger {
     private List<SportActivity> activities;
-    private static final String FILE_NAME = "activities.txt";
+    private String fileName;
 
     public SportLogger() {
+        this("activities.txt");
+    }
+
+    public SportLogger(String fileName) {
+        this.fileName = fileName;
         activities = new ArrayList<>();
         loadActivities();
     }
@@ -33,6 +38,10 @@ public class SportLogger {
         }
     }
 
+    public List<SportActivity> getActivities() {
+        return activities;
+    }
+
     public void removeActivity(String name) {
         activities.removeIf(activity -> activity.getName().equals(name));
         saveActivities();
@@ -46,8 +55,8 @@ public class SportLogger {
         return totalTime;
     }
 
-    private void saveActivities() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME))) {
+    void saveActivities() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             for (SportActivity activity : activities) {
                 writer.write(activity.getName() + "," + activity.getDuration());
                 writer.newLine();
@@ -58,7 +67,17 @@ public class SportLogger {
     }
 
     private void loadActivities() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME))) {
+        File file = new File(fileName);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                System.err.println("Error creating file: " + e.getMessage());
+                return;
+            }
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
@@ -116,7 +135,7 @@ public class SportLogger {
         }
     }
 
-    private class SportActivity {
+    public class SportActivity {
         private String name;
         private int duration; // in minutes
 
