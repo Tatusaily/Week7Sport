@@ -8,3 +8,6 @@ Functionalities are:<br>
   <li>Calculate total time</li>
   <li>Erase an activity</li>
 </ul>
+
+Extract project to a folder of your choice and run "mvn clean package" to compile the program into a jar file
+Run the "Week7Sport.jar" to run your sport tracker.
